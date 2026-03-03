@@ -3,9 +3,9 @@ requires = ["hatchling>=1.27.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "llm-gateway"
+name = "hermes"
 version = "0.1.0"
-description = "Demo-first LLM gateway and control plane built on top of OpenRouter."
+description = "Hermes: production-oriented LLM control plane built on top of OpenRouter."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }

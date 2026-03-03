@@ -67,9 +67,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(
-    title="LLM Gateway",
+    title="Hermes",
     version="0.1.0",
-    description="Demo-first LLM control plane for routing, retries, budgets, caching, and logs.",
+    description=(
+        "Hermes: production-oriented LLM control plane for routing, retries, "
+        "budgets, caching, and logs."
+    ),
     lifespan=lifespan,
 )
 

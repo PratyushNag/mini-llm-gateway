@@ -19,12 +19,12 @@ class Settings(BaseSettings):
     app_env: Literal["local", "demo", "production"] = "demo"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
-    database_url: str = "sqlite+aiosqlite:///./llm_gateway.db"
+    database_url: str = "sqlite+aiosqlite:///./hermes.db"
     redis_url: str = "redis://localhost:6379/0"
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     openrouter_api_key: str = ""
     openrouter_http_referer: str = "http://localhost:8000"
-    openrouter_app_title: str = "llm-gateway"
+    openrouter_app_title: str = "Hermes"
     enable_demo_mode: bool = True
     demo_upstream_mode: Literal["mock", "openrouter"] = "mock"
     default_route_policy: str = "balanced"

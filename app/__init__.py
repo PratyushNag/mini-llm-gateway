@@ -1,1 +1,1 @@
-"""LLM gateway package."""
+"""Hermes package."""

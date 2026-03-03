@@ -1,12 +1,12 @@
-# LLM Gateway
+# Hermes
 
-Lightweight LLM control plane built on top of OpenRouter for routing, retries, budgets, caching, and request visibility.
+Production-oriented LLM control plane for routing, retries, budgets, caching, streaming, and request visibility.
 
-This repo is intentionally built as infra, not a chatbot app. It exposes an OpenAI-compatible chat endpoint, applies gateway-owned routing and fallback policy, tracks cost and latency, persists request and attempt logs, supports streaming, and includes a single walkthrough script that demos the full system without a frontend.
+Hermes is an infrastructure platform for managing LLM traffic. It exposes an OpenAI-compatible chat endpoint, applies gateway-owned routing and fallback policy, tracks cost and latency, persists request and attempt logs, supports streaming, and includes a single walkthrough script for exercising the platform end to end without a frontend.
 
 ## What This Repo Provides
 
-This repository provides a compact but real control-plane slice for LLM traffic:
+This repository provides the backend core of Hermes:
 
 - an OpenAI-compatible `POST /v1/chat/completions` gateway endpoint
 - config-driven model routing for `model=auto`
@@ -17,17 +17,17 @@ This repository provides a compact but real control-plane slice for LLM traffic:
 - request-level and attempt-level logs in Postgres
 - streaming support with persisted final usage
 - Prometheus metrics and structured JSON logging
-- one deterministic walkthrough script that demos all major branches
+- one deterministic walkthrough script that demonstrates all major runtime branches
 
 This makes the repo useful as:
 
-- a portfolio project for LLM infra / gateway / control-plane roles
+- a production-oriented LLM gateway/control-plane backend
 - a reference implementation for policy-driven LLM request handling
-- a small internal service template for teams centralizing LLM traffic
+- a portfolio project for LLM infra / gateway / control-plane roles
 
-## What This Repo Does Not Provide
+## What This Repo Does Not Yet Provide
 
-This is an MVP control plane, not a full production platform. It intentionally does not include:
+Hermes is positioned as a production platform backend, but this repository intentionally does not yet include every surrounding platform surface. Today it does not include:
 
 - admin APIs for creating projects, rotating keys, or changing budgets
 - a web dashboard or frontend
@@ -41,7 +41,7 @@ Those omissions are deliberate. The repo is focused on the request path, policy 
 
 ## Why This Repo Exists
 
-I built this to showcase the kind of problems LLM infrastructure teams care about:
+Hermes was built to represent the kind of problems LLM infrastructure teams care about:
 
 - routing requests across model candidates
 - retrying and falling back on failure
@@ -75,11 +75,11 @@ CLI Demo Runner / API Client
 - `GET /v1/logs` and `GET /v1/logs/{id}` for request and attempt visibility
 - streaming support with persisted final usage
 - deterministic demo fault injection for reliable fallback demos
-- one walkthrough script that demonstrates success, fallback, budget rejection, cache, and streaming
+- one walkthrough script that demonstrates success, fallback, budget rejection, cache, and streaming on top of the same platform APIs
 
 ## Current Scope
 
-Today, the strongest supported path is:
+Today, Hermes is strongest in the core control-plane path:
 
 - one FastAPI service
 - one upstream integration layer targeting OpenRouter
@@ -88,7 +88,7 @@ Today, the strongest supported path is:
 - one demo project seeded locally
 - one walkthrough script as the primary showcase path
 
-If you approach the repo with that frame, the design decisions make more sense: it is intentionally narrow, but the narrow slice is complete and legible.
+If you approach the repo with that frame, the design decisions make more sense: the backend core is intentionally focused, while the surrounding platform surfaces are left for the next layer of expansion.
 
 ## Quickstart
 
@@ -129,7 +129,7 @@ uv run uvicorn app.main:app --reload
 uv run python -m scripts.demo_walkthrough
 ```
 
-Swagger docs are available at `http://127.0.0.1:8000/docs`, but the walkthrough script is the primary showcase path.
+Swagger docs are available at `http://127.0.0.1:8000/docs`, but the walkthrough script is the fastest way to see Hermes behave like a real control plane.
 
 ## Demo Walkthrough
 
@@ -159,7 +159,7 @@ Or with pauses between sections:
 uv run python -m scripts.demo_walkthrough --interactive
 ```
 
-If you want to use the gateway directly instead of the walkthrough, send requests to:
+If you want to use Hermes directly instead of the walkthrough, send requests to:
 
 ```text
 POST /v1/chat/completions
@@ -230,7 +230,7 @@ Important flags:
 - `DEMO_UPSTREAM_MODE=mock`
 - `DEMO_PROJECT_API_KEY=lgw_demo_local_key`
 
-When `DEMO_UPSTREAM_MODE=mock`, the gateway can be demoed locally without an OpenRouter API key. Switching to real OpenRouter traffic is a config change, not a code change.
+When `DEMO_UPSTREAM_MODE=mock`, Hermes can be demoed locally without an OpenRouter API key. Switching to real OpenRouter traffic is a config change, not a code change.
 
 ## Project Layout
 
@@ -278,7 +278,7 @@ uv run pre-commit run --all-files
 
 - Tables are created automatically on startup for ease of demo. Full Alembic migrations can be added next without changing the service boundaries.
 - Demo mode uses deterministic failure injection and a mock upstream adapter so the project is reviewable without third-party credentials.
-- The gateway owns model-level fallback. OpenRouter still handles provider-level routing under the selected model.
+- Hermes owns model-level fallback. OpenRouter still handles provider-level routing under the selected model.
 
 ## Missing Next
 

@@ -10,7 +10,7 @@ import typer
 
 from app.core.config import get_settings
 
-app = typer.Typer(help="Run the full llm-gateway demo walkthrough.")
+app = typer.Typer(help="Run the full Hermes demo walkthrough.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -263,7 +263,7 @@ def run(
     ),
 ) -> None:
     settings = get_settings()
-    typer.echo("LLM Gateway demo walkthrough")
+    typer.echo("Hermes demo walkthrough")
     typer.echo(f"Base URL: {_base_url()}")
     typer.echo(f"Demo project: {settings.demo_project_name}")
     typer.echo(f"Demo mode: {settings.demo_upstream_mode}")

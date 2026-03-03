@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:17-alpine
     environment:
-      POSTGRES_DB: llm_gateway
+      POSTGRES_DB: hermes
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
