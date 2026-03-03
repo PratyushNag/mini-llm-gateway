@@ -4,6 +4,41 @@ Lightweight LLM control plane built on top of OpenRouter for routing, retries, b
 
 This repo is intentionally built as infra, not a chatbot app. It exposes an OpenAI-compatible chat endpoint, applies gateway-owned routing and fallback policy, tracks cost and latency, persists request and attempt logs, supports streaming, and includes a single walkthrough script that demos the full system without a frontend.
 
+## What This Repo Provides
+
+This repository provides a compact but real control-plane slice for LLM traffic:
+
+- an OpenAI-compatible `POST /v1/chat/completions` gateway endpoint
+- config-driven model routing for `model=auto`
+- retry and fallback across model candidates
+- per-project API key authentication
+- budget checks and per-request cost caps
+- Redis-backed caching for eligible non-streaming requests
+- request-level and attempt-level logs in Postgres
+- streaming support with persisted final usage
+- Prometheus metrics and structured JSON logging
+- one deterministic walkthrough script that demos all major branches
+
+This makes the repo useful as:
+
+- a portfolio project for LLM infra / gateway / control-plane roles
+- a reference implementation for policy-driven LLM request handling
+- a small internal service template for teams centralizing LLM traffic
+
+## What This Repo Does Not Provide
+
+This is an MVP control plane, not a full production platform. It intentionally does not include:
+
+- admin APIs for creating projects, rotating keys, or changing budgets
+- a web dashboard or frontend
+- Alembic migrations and full schema evolution workflows
+- rate limiting, quota enforcement, or abuse protection
+- multi-provider integrations beyond OpenRouter
+- advanced deployment manifests or CI/CD pipelines
+- full production hardening around secrets, tenancy, and operational controls
+
+Those omissions are deliberate. The repo is focused on the request path, policy layer, persistence model, and observability story.
+
 ## Why This Repo Exists
 
 I built this to showcase the kind of problems LLM infrastructure teams care about:
@@ -41,6 +76,19 @@ CLI Demo Runner / API Client
 - streaming support with persisted final usage
 - deterministic demo fault injection for reliable fallback demos
 - one walkthrough script that demonstrates success, fallback, budget rejection, cache, and streaming
+
+## Current Scope
+
+Today, the strongest supported path is:
+
+- one FastAPI service
+- one upstream integration layer targeting OpenRouter
+- one Postgres-backed persistence layer
+- one Redis-backed cache layer
+- one demo project seeded locally
+- one walkthrough script as the primary showcase path
+
+If you approach the repo with that frame, the design decisions make more sense: it is intentionally narrow, but the narrow slice is complete and legible.
 
 ## Quickstart
 
@@ -231,3 +279,14 @@ uv run pre-commit run --all-files
 - Tables are created automatically on startup for ease of demo. Full Alembic migrations can be added next without changing the service boundaries.
 - Demo mode uses deterministic failure injection and a mock upstream adapter so the project is reviewable without third-party credentials.
 - The gateway owns model-level fallback. OpenRouter still handles provider-level routing under the selected model.
+
+## Missing Next
+
+If this were being pushed from strong MVP to production readiness, the next additions would be:
+
+- admin/project management APIs
+- key rotation and revocation flows
+- migration management with Alembic
+- rate limiting and quota enforcement
+- stronger deployment and operational docs
+- broader integration and end-to-end test coverage
