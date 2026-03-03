@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llm-gateway"
+version = "0.1.0"
+description = "Demo-first LLM gateway and control plane built on top of OpenRouter."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Pratyush Nag" }]
+dependencies = [
+  "aiosqlite>=0.21.0",
+  "asyncpg>=0.30.0",
+  "fastapi>=0.116.0",
+  "httpx>=0.28.1",
+  "orjson>=3.11.0",
+  "prometheus-client>=0.22.0",
+  "pydantic>=2.11.0",
+  "pydantic-settings>=2.10.0",
+  "pyyaml>=6.0.2",
+  "redis>=6.4.0",
+  "sqlalchemy>=2.0.43",
+  "typer>=0.16.1",
+  "uvicorn[standard]>=0.35.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.17.0",
+  "pytest>=8.4.1",
+  "pytest-asyncio>=1.1.0",
+  "ruff>=0.12.8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "ASYNC", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+plugins = []

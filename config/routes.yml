@@ -1,0 +1,45 @@
+default_policy: balanced
+policies:
+  balanced:
+    aliases:
+      auto:
+        candidates:
+          - model: openai/gpt-4.1
+            input_cost_per_1k: 0.010
+            output_cost_per_1k: 0.030
+          - model: openai/gpt-4o-mini
+            input_cost_per_1k: 0.00015
+            output_cost_per_1k: 0.0006
+    retry_on:
+      - timeout
+      - upstream_429
+      - upstream_5xx
+      - network_error
+      - demo_forced_timeout
+  cheap:
+    aliases:
+      auto:
+        candidates:
+          - model: openai/gpt-4o-mini
+            input_cost_per_1k: 0.00015
+            output_cost_per_1k: 0.0006
+    retry_on:
+      - timeout
+      - upstream_429
+      - upstream_5xx
+      - network_error
+  quality:
+    aliases:
+      auto:
+        candidates:
+          - model: openai/gpt-4.1
+            input_cost_per_1k: 0.010
+            output_cost_per_1k: 0.030
+          - model: openai/gpt-4o-mini
+            input_cost_per_1k: 0.00015
+            output_cost_per_1k: 0.0006
+    retry_on:
+      - timeout
+      - upstream_429
+      - upstream_5xx
+      - network_error
