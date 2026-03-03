@@ -1,4 +1,5 @@
 from decimal import Decimal
+from pathlib import Path
 
 from app.core.config import Settings
 from app.domain.entities import ProjectContext
@@ -6,7 +7,7 @@ from app.services.routing_service import RoutingService
 
 
 def test_routing_service_resolves_auto_policy() -> None:
-    settings = Settings(routes_config_path="config/routes.yml")
+    settings = Settings(routes_config_path=Path("config/routes.yml"))
     service = RoutingService(settings)
     project = ProjectContext(
         project_id="prj_1",

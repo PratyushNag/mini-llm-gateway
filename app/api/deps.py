@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
+from typing import Any, cast
 
 from fastapi import Header, Request
 from redis.asyncio import Redis
@@ -23,7 +24,7 @@ class ServiceContainer:
 
 
 def get_container(request: Request) -> ServiceContainer:
-    return request.app.state.container
+    return cast(ServiceContainer, request.app.state.container)
 
 
 async def get_project_context(
@@ -39,7 +40,7 @@ async def get_project_context(
 def build_gateway_request(
     *,
     request_id: str,
-    payload: dict,
+    payload: dict[str, Any],
     route_policy_override: str | None,
     request_cap_header: str | None,
     cache_mode_header: str | None,

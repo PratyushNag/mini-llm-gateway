@@ -22,6 +22,7 @@ class RoutingService:
         route_policy_override: str | None,
         project: ProjectContext,
     ) -> RoutePlan:
+        candidates: tuple[RouteCandidate, ...]
         policy_name = (
             route_policy_override or project.default_route_policy or self._config["default_policy"]
         )
@@ -61,7 +62,8 @@ class RoutingService:
     @staticmethod
     def _load_config(path: Path) -> dict[str, Any]:
         with path.open("r", encoding="utf-8") as file_pointer:
-            return yaml.safe_load(file_pointer)
+            payload = yaml.safe_load(file_pointer)
+        return dict(payload)
 
     @staticmethod
     def _build_candidate(payload: dict[str, Any]) -> RouteCandidate:

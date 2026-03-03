@@ -1,16 +1,25 @@
-PYTHON ?= python
+UV ?= uv
 
 up:
 	docker compose up --build
 
 install:
-	$(PYTHON) -m pip install -e .[dev]
+	$(UV) sync --extra dev
+
+hooks:
+	$(UV) run pre-commit install
 
 seed-demo:
-	$(PYTHON) -m scripts.seed_demo
+	$(UV) run python -m scripts.seed_demo
 
 demo-all:
-	$(PYTHON) -m scripts.demo_walkthrough
+	$(UV) run python -m scripts.demo_walkthrough
 
 test:
-	$(PYTHON) -m pytest
+	$(UV) run pytest
+
+lint:
+	$(UV) run ruff check .
+
+typecheck:
+	$(UV) run mypy .

@@ -5,6 +5,7 @@ import time
 from dataclasses import replace
 from datetime import UTC, datetime
 from decimal import Decimal
+from typing import Any
 
 from fastapi.responses import StreamingResponse
 
@@ -34,6 +35,12 @@ from app.services.logging_service import LoggingService
 from app.services.routing_service import RoutingService
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _payload_or_empty(payload: object) -> dict[str, Any]:
+    if isinstance(payload, dict):
+        return payload
+    return {}
 
 
 class ChatService:
@@ -304,7 +311,7 @@ class ChatService:
             attempt_index=1,
         )
 
-        async def stream_iterator():
+        async def stream_iterator() -> Any:
             attempts: list[AttemptRecord] = []
             try:
                 async for chunk in handle.event_iterator:
@@ -459,6 +466,7 @@ class ChatService:
         budget_reason: str,
     ) -> GatewayResponse:
         now = datetime.now(UTC)
+        usage_payload = _payload_or_empty(response_body.get("usage"))
         request_record = RequestRecord(
             request_id=request.request_id,
             project_id=project.project_id,
@@ -473,9 +481,9 @@ class ChatService:
             started_at=now,
             completed_at=now,
             latency_ms=0,
-            prompt_tokens=int(response_body.get("usage", {}).get("prompt_tokens", 0)),
-            completion_tokens=int(response_body.get("usage", {}).get("completion_tokens", 0)),
-            total_tokens=int(response_body.get("usage", {}).get("total_tokens", 0)),
+            prompt_tokens=int(usage_payload.get("prompt_tokens", 0)),
+            completion_tokens=int(usage_payload.get("completion_tokens", 0)),
+            total_tokens=int(usage_payload.get("total_tokens", 0)),
             cost_usd=Decimal("0.000000"),
             request_body_redacted=redact_payload(request.raw_payload)
             if request.capture_body

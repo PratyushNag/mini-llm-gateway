@@ -29,9 +29,11 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "mypy>=1.17.0",
+  "pre-commit>=4.3.0",
   "pytest>=8.4.1",
   "pytest-asyncio>=1.1.0",
   "ruff>=0.12.8",
+  "types-PyYAML>=6.0.12.20250822",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -53,3 +55,7 @@ strict = true
 warn_unused_ignores = true
 warn_redundant_casts = true
 plugins = []
+
+[[tool.mypy.overrides]]
+module = ["yaml"]
+ignore_missing_imports = true

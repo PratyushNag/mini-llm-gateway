@@ -54,25 +54,31 @@ docker compose up postgres redis -d
 3. Install the app:
 
 ```bash
-python -m pip install -e .[dev]
+uv sync --extra dev
 ```
 
-4. Seed the demo project:
+4. Install the git hook:
 
 ```bash
-python -m scripts.seed_demo
+uv run pre-commit install
 ```
 
-5. Start the API:
+5. Seed the demo project:
 
 ```bash
-uvicorn app.main:app --reload
+uv run python -m scripts.seed_demo
 ```
 
-6. Run the full demo walkthrough:
+6. Start the API:
 
 ```bash
-python -m scripts.demo_walkthrough
+uv run uvicorn app.main:app --reload
+```
+
+7. Run the full demo walkthrough:
+
+```bash
+uv run python -m scripts.demo_walkthrough
 ```
 
 Swagger docs are available at `http://127.0.0.1:8000/docs`, but the walkthrough script is the primary showcase path.
@@ -80,7 +86,7 @@ Swagger docs are available at `http://127.0.0.1:8000/docs`, but the walkthrough 
 ## Demo Walkthrough
 
 ```bash
-python -m scripts.demo_walkthrough
+uv run python -m scripts.demo_walkthrough
 ```
 
 The walkthrough runs all major gateway features in order:
@@ -96,13 +102,13 @@ The fallback step is deterministic in demo mode. It forces the first `gpt-4.1` a
 For a single live walkthrough that exercises every feature in order:
 
 ```bash
-python -m scripts.demo_walkthrough
+uv run python -m scripts.demo_walkthrough
 ```
 
 Or with pauses between sections:
 
 ```bash
-python -m scripts.demo_walkthrough --interactive
+uv run python -m scripts.demo_walkthrough --interactive
 ```
 
 If you want to use the gateway directly instead of the walkthrough, send requests to:
@@ -198,7 +204,26 @@ tests/
 ## Testing
 
 ```bash
-python -m pytest
+uv run pytest
+```
+
+## Quality Gates
+
+This repo uses `uv` for environment and dependency management, and `pre-commit` for local quality gates.
+
+Before each commit, the hook runs:
+
+- `uv run ruff check .`
+- `uv run mypy .`
+- `uv run pytest`
+
+Manual commands:
+
+```bash
+uv run ruff check .
+uv run mypy .
+uv run pytest
+uv run pre-commit run --all-files
 ```
 
 ## Tradeoffs

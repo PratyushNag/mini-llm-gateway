@@ -2,7 +2,12 @@ import pytest
 
 from app.core.config import Settings
 from app.core.exceptions import UpstreamGatewayError
-from app.domain.entities import GatewayChatRequest, ProviderChatResult, ProviderUsage
+from app.domain.entities import (
+    GatewayChatRequest,
+    ProviderChatResult,
+    ProviderStreamHandle,
+    ProviderUsage,
+)
 from app.providers.demo_failure import DemoFailureProvider
 
 
@@ -21,7 +26,7 @@ class _StubProvider:
 
     async def stream_chat_completion(
         self, *, candidate_model: str, request: GatewayChatRequest, attempt_index: int
-    ):
+    ) -> ProviderStreamHandle:
         raise AssertionError("stream not used in this test")
 
 

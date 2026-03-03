@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import time
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 import httpx
 import typer
@@ -167,7 +167,7 @@ def _ensure_gateway_ready(client: httpx.Client) -> None:
 def _fetch_log_detail(client: httpx.Client, request_id: str) -> dict[str, Any]:
     response = client.get(f"{_base_url()}/v1/logs/{request_id}", headers=_headers())
     response.raise_for_status()
-    return response.json()
+    return cast(dict[str, Any], response.json())
 
 
 def _print_detail(detail: dict[str, Any]) -> None:

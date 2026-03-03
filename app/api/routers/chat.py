@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from app.api.deps import build_gateway_request, get_container, get_project_context
 from app.api.schemas import ChatCompletionRequest
@@ -25,7 +25,7 @@ async def create_chat_completion(
     cache_mode_header: str | None = Header(default=None, alias="X-Gateway-Cache-Mode"),
     capture_body_header: str | None = Header(default=None, alias="X-Gateway-Capture-Body"),
     demo_scenario_header: str | None = Header(default=None, alias="X-Demo-Scenario"),
-):
+) -> Response:
     container = get_container(request)
     request.state.gateway_request_id = new_request_id()
     gateway_request = build_gateway_request(

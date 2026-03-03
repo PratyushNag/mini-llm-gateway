@@ -18,7 +18,7 @@ async def readyz(request: Request) -> dict[str, str]:
     container = get_container(request)
     async with container.engine.begin() as connection:
         await connection.run_sync(lambda _: None)
-    await container.redis.ping()
+    await container.redis.ping()  # type: ignore[misc]
     return {"status": "ready"}
 
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from decimal import Decimal
+from typing import Any
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text, func
 from sqlalchemy.dialects.postgresql import JSONB
@@ -77,8 +78,8 @@ class LlmRequestModel(Base):
     error_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     budget_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
-    request_body_redacted: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
-    response_body_redacted: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    request_body_redacted: Mapped[dict[str, Any] | None] = mapped_column(JSONType, nullable=True)
+    response_body_redacted: Mapped[dict[str, Any] | None] = mapped_column(JSONType, nullable=True)
 
     attempts: Mapped[list[LlmAttemptModel]] = relationship(back_populates="request")
 

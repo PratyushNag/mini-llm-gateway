@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 from collections.abc import AsyncIterator
+from typing import Any, cast
 
 import httpx
 
@@ -15,6 +16,10 @@ from app.domain.entities import (
     ProviderUsage,
 )
 from app.providers.translators import build_provider_payload, estimate_usage, flatten_response_text
+
+
+def _messages_as_dicts(request: GatewayChatRequest) -> list[dict[str, Any]]:
+    return [dict(message) for message in request.messages]
 
 
 def _build_headers(settings: Settings) -> dict[str, str]:
@@ -67,7 +72,7 @@ class OpenRouterProvider:
                 message=response.text,
                 status_code=response.status_code,
                 retryable=retryable,
-            )
+        )
         body = response.json()
         usage_payload = body.get("usage", {})
         usage = ProviderUsage(
@@ -151,7 +156,10 @@ class OpenRouterProvider:
             finally:
                 await response.aclose()
                 if usage.total_tokens == 0:
-                    usage = estimate_usage(list(request.messages), max_tokens=request.max_tokens)
+                    usage = estimate_usage(
+                        _messages_as_dicts(request),
+                        max_tokens=request.max_tokens,
+                    )
                 result_box["result"] = ProviderChatResult(
                     response_body={
                         "id": upstream_request_id or f"stream-{request.request_id}",
@@ -203,7 +211,7 @@ class OpenRouterProvider:
             f"The gateway processed your request. "
             f"Prompt summary: {last_user_message[:180]}"
         )
-        usage = estimate_usage(list(request.messages), max_tokens=request.max_tokens)
+        usage = estimate_usage(_messages_as_dicts(request), max_tokens=request.max_tokens)
         body = {
             "id": f"mock-{request.request_id}",
             "object": "chat.completion",
@@ -227,7 +235,7 @@ class OpenRouterProvider:
             usage=usage,
             actual_model=candidate_model,
             provider_name="mock-openrouter",
-            upstream_request_id=body["id"],
+            upstream_request_id=cast(str, body["id"]),
             content_text=content,
         )
 
@@ -240,7 +248,7 @@ class OpenRouterProvider:
         content = self._mock_completion(
             candidate_model=candidate_model, request=request
         ).content_text
-        usage = estimate_usage(list(request.messages), max_tokens=request.max_tokens)
+        usage = estimate_usage(_messages_as_dicts(request), max_tokens=request.max_tokens)
         done = asyncio.Event()
         result_box: dict[str, ProviderChatResult] = {}
 
